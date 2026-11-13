@@ -80,6 +80,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
 .hero-media{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:2px;background:#0d0d0d}
 .hero-media img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;animation:settle 1.8s cubic-bezier(.2,.7,.2,1) both}
+.hero-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s}
+.hero-media video.is-playing{opacity:1}
 @keyframes settle{from{transform:scale(1.07)}to{transform:scale(1)}}
 
 .facts{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -315,6 +317,7 @@ fieldset.field{border:0;margin:0;padding:0}
       </div>
       <figure class="hero-media" style="margin:0">
         <img src="./909e1f821_IMG_1514.jpg" alt="Gelato σοκολάτας βγαίνει από τη μηχανή παραγωγής" fetchpriority="high">
+        <video id="hero-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-src="./hero.mp4"></video>
       </figure>
     </div>
     <div class="facts">
@@ -663,6 +666,14 @@ fieldset.field{border:0;margin:0;padding:0}
   var EMAIL = 'info@bombologelato.com';
 
   var y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();
+
+  /* ---- Βίντεο στο hero: ανεβάστε το αρχείο ως hero.mp4 δίπλα στη σελίδα. Χωρίς αρχείο μένει η φωτογραφία. ---- */
+  var hv=document.getElementById('hero-video');
+  if(hv && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){
+    hv.addEventListener('playing',function(){ hv.classList.add('is-playing'); });
+    hv.src=hv.getAttribute('data-src');
+    var pr=hv.play(); if(pr && pr.catch) pr.catch(function(){});
+  }
 
   function openMail(fields, subject){
     var body=Object.keys(fields).map(function(k){ return k+': '+(fields[k]||'—'); }).join('\n');
